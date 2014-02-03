@@ -1,0 +1,7 @@
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+<form action="{% url 'accounts:login' %}" method="POST">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" />
+</form>
+<a href="{% url 'accounts:register' %}">Créer un compte</a>
