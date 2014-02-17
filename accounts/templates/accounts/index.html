@@ -2,8 +2,13 @@
 <ul>
 	<li>Nom: {{ user.last_name }}</li>
 	<li>Prénom: {{ user.first_name }}</li>
-	<li>Groups: {{ user.groups }}</li>
+	<li>Groups: 
+			{% for g in user.groups.all %}
+			<span class="group">{{ g.name }}</span>
+			{% endfor %}
+	</li>
 	<li>Username: {{ user.username }}</li>
 	<li>Email: {{ user.email }}</li>
 </ul>
 <a href="{% url 'accounts:logout' %}">Logout</a>
+<a href="{% url 'accounts:register' %}"> Créer des utilisateurs</a>
