@@ -10,5 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
-    url(r'^$', include('saisie_absences.urls', namespace='saisie')),
+    url(r'^', include('saisie_absences.urls', namespace='saisie')),
 )

@@ -44,12 +44,11 @@ class Absence(models.Model):
 	date = models.DateTimeField()
 	matiere = models.ForeignKey(Matiere)
 	etudiant = models.ForeignKey(Etudiant)
+	justificatif = models.ForeignKey(Justificatif)
 
 class Justificatif(models.Model):
-	dateDebut = models.DateTimeField()
-	dateFin = models.DateTimeField()
+	motif = models.CharField(max_length=200)
 	fichier = models.CharField(max_length=200)
-	etudiant = models.ForeignKey(Etudiant)
 
 admin.site.register(Etudiant)
 admin.site.register(Enseignant)
