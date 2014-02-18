@@ -89,7 +89,7 @@ def login(request):
 				user = auth.authenticate(username=username, password=password)
 				if user is not None:
 					auth.login(request, user)					
-					return HttpResponseRedirect(reverse('accounts:index'))
+					return HttpResponseRedirect(reverse('saisie:index'))
 				else:
 					return render(request, template, {
 						'form': form,

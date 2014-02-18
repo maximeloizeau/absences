@@ -13,7 +13,7 @@ class Enseignant(Utilisateur):
 
 class Departement(models.Model):
 	nom = models.CharField(max_length=200)
-	directeur = models.ForeignKey(Enseignant, on_delete=models.SET_NULL, null = True)
+	directeur = models.OneToOneField(Enseignant, on_delete=models.SET_NULL, null = True)
 
 	def __str__(self):
 		return self.nom
@@ -21,7 +21,7 @@ class Departement(models.Model):
 class Annee(models.Model):
 	nom = models.CharField(max_length=200)
 	dpt = models.ForeignKey(Departement)
-	responsable = models.ForeignKey(Enseignant, on_delete=models.SET_NULL, null = True)
+	responsable = models.OneToOneField(Enseignant, on_delete=models.SET_NULL, null = True)
 
 	def __str__(self):
 		return self.nom
