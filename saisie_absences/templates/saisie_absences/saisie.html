@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	{% load staticfiles %}
+{% extends "saisie_absences/index.html" %}
 
-	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-</head>
-<body>
+{% block content %}
 	{% if error %}<div class="error">{{ error }}</div>{% endif %}
 	<form action="{% url 'saisie:saisie' %}" method="POST">
 		{% csrf_token %}
 		{{ form.as_p }}
 		<input type="submit" />
 	</form>
-</body>
-</html>
+{% endblock %}

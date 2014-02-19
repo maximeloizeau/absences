@@ -21,13 +21,13 @@
 	<ul class="nav nav-pills nav-stacked" style="width: 20%;margin:2%;float:left">
 		<li class="active"><a href="/">Accueil</a></li>
 		<li><a href="{% url 'accounts:index' %}">Profil</a></li>
-		{% if is_etudiant %}
+		{% if user.utilisateur.is_etudiant %}
 			<li><a href="">Absences</a></li>
 			<li><a href=""><span class="badge pull-right">2</span>Absences non justifiées</a></li>
-		{% elif is_enseignant %}
-			<li><a href="">Ajouter des absences</a></li>
+		{% elif user.utilisateur.is_enseignant %}
+			<li><a href="{% url 'saisie:saisie' %}">Ajouter des absences</a></li>
 			<li><a href="">Consulter les absences</a></li>
-		{% elif is_secretaire %}
+		{% elif user.utilisateur.is_secretaire %}
 			<li><a href="">Ajouter un justificatif</a></li>
 			<li><a href="">Consulter absences</a></li>
 			<li><a href="{% url 'accounts:register' %}">Ajouter utilisateur</a></li>
@@ -41,8 +41,8 @@
 		{% endif %}
 	</ul>
 	<section style="width: 72%; margin-left:25%;">
-		<div class="alert alert-success">Bienvenue {{ user.first_name }} {{ user.last_name }}</div>
 		{% block content %}
+		<div class="alert alert-success">Bienvenue {{ user.first_name }} {{ user.last_name }}</div>
 		{% endblock %}
 	</section>
 	<script src="{% static 'js/jquery-2.1.0.min.js' %}" type="text/javascript" charset="utf-8" async defer></script>

@@ -5,11 +5,20 @@ from django.contrib import admin
 class Utilisateur(models.Model):
 	user = models.OneToOneField(User)
 
-	class Meta:
-		abstract = True
+	@property
+	def is_etudiant(self):
+		return isinstance(self, Etudiant)
+	@property
+	def is_utilisateur(self):
+		return isinstance(self, Utilisateur)
+	@property
+	def is_enseignant(self):
+		return False
 
 class Enseignant(Utilisateur):
-	pass
+	@property
+	def is_enseignant(self):
+		return isinstance(self, Enseignant)
 
 class Departement(models.Model):
 	nom = models.CharField(max_length=200)
@@ -40,15 +49,15 @@ class Etudiant(Utilisateur):
 class Secretaire(Utilisateur):
 	pass
 
+class Justificatif(models.Model):
+	motif = models.CharField(max_length=200)
+	fichier = models.CharField(max_length=200)
+
 class Absence(models.Model):
 	date = models.DateTimeField()
 	matiere = models.ForeignKey(Matiere)
 	etudiant = models.ForeignKey(Etudiant)
 	justificatif = models.ForeignKey(Justificatif)
-
-class Justificatif(models.Model):
-	motif = models.CharField(max_length=200)
-	fichier = models.CharField(max_length=200)
 
 admin.site.register(Etudiant)
 admin.site.register(Enseignant)

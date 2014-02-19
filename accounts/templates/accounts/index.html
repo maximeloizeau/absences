@@ -1,3 +1,6 @@
+{% extends "saisie_absences/index.html" %}
+
+{% block content %}
 <h1>Profil</h1>
 <ul>
 	<li>Nom: {{ user.last_name }}</li>
@@ -11,4 +14,4 @@
 	<li>Email: {{ user.email }}</li>
 </ul>
 <a href="{% url 'accounts:logout' %}">Logout</a>
-<a href="{% url 'accounts:register' %}"> Créer des utilisateurs</a>
+{% endblock %}
