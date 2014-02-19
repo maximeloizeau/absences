@@ -18,15 +18,18 @@ def index(request):
 
 @login_required
 def saisie(request):
-	if request.user.groups.filter(pk=2).exists():
+	if request.user.groups.filter(pk=3).exists():
 		template = 'saisie_absences/saisie.html'
 
 		if request.method == 'POST':
 			form = SaisieAbsencesForm(request.POST)
 			if form.is_valid():
-				date = request.POST['date']
-				matiere = resquest.POST['matiere']
-				etudiant = request.POST['etudiant']
+				form.save()
+				form = SaisieAbsencesForm()
+				return render(request, template, {
+					'form': form,
+					'info' : 'Absence enregistrée.'
+				})
 			else:
 				return render(request, template, {
 					'form': form,
@@ -34,9 +37,10 @@ def saisie(request):
 				})
 		else:
 			form = SaisieAbsencesForm()
+			return render(request, template,{
+				'form': form
+			})
 		
-		return render(request, template, {	
-			'form' : form
-		})
+
 	else:
 		return HttpResponseRedirect(reverse('saisie:index'))

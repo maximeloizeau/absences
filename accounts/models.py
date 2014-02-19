@@ -8,6 +8,9 @@ class Utilisateur(models.Model):
 	class Meta:
 		abstract = True
 
+	def __str__(self):
+		return self.user.first_name + " " + self.user.last_name
+
 class Enseignant(Utilisateur):
 	pass
 
@@ -40,15 +43,18 @@ class Etudiant(Utilisateur):
 class Secretaire(Utilisateur):
 	pass
 
+class Justificatif(models.Model):
+	motif = models.CharField(max_length=200)
+	fichier = models.CharField(max_length=200)
+
 class Absence(models.Model):
 	date = models.DateTimeField()
 	matiere = models.ForeignKey(Matiere)
 	etudiant = models.ForeignKey(Etudiant)
-	justificatif = models.ForeignKey(Justificatif)
+	justificatif = models.ForeignKey(Justificatif, blank=True, null=True)
 
-class Justificatif(models.Model):
-	motif = models.CharField(max_length=200)
-	fichier = models.CharField(max_length=200)
+	def __str__(self):
+		return self.etudiant.user.first_name + " " + self.etudiant.user.last_name + " - " + self.matiere.nom + " - " + self.date.day.__str__() + "/" + self.date.month.__str__()
 
 admin.site.register(Etudiant)
 admin.site.register(Enseignant)

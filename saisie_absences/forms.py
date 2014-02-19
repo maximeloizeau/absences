@@ -4,4 +4,4 @@ from django.forms import ModelForm
 class SaisieAbsencesForm(ModelForm):
 	class Meta:
 		model = Absence
-		fields = ['date', 'matiere', 'etudiant']
+		fields = ('date', 'matiere', 'etudiant')
