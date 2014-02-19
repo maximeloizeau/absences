@@ -5,23 +5,11 @@ from django.contrib import admin
 class Utilisateur(models.Model):
 	user = models.OneToOneField(User)
 
-	@property
-	def is_etudiant(self):
-		return isinstance(self, Etudiant)
-	@property
-	def is_utilisateur(self):
-		return isinstance(self, Utilisateur)
-	@property
-	def is_enseignant(self):
-		return False
-
-	def __str__(self):
-		return self.user.first_name + " " + self.user.last_name
+	class Meta:
+		abstract = True
 
 class Enseignant(Utilisateur):
-	@property
-	def is_enseignant(self):
-		return isinstance(self, Enseignant)
+	pass
 
 class Departement(models.Model):
 	nom = models.CharField(max_length=200)
@@ -62,12 +50,9 @@ class Absence(models.Model):
 	etudiant = models.ForeignKey(Etudiant)
 	justificatif = models.ForeignKey(Justificatif, blank=True, null=True)
 
-<<<<<<< HEAD
-=======
 	def __str__(self):
 		return self.etudiant.user.first_name + " " + self.etudiant.user.last_name + " - " + self.matiere.nom + " - " + self.date.day.__str__() + "/" + self.date.month.__str__()
 
->>>>>>> f8451df2b5c345fc317b81dad699e3b4bb0e430a
 admin.site.register(Etudiant)
 admin.site.register(Enseignant)
 admin.site.register(Secretaire)

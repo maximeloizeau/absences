@@ -14,31 +14,38 @@
 
 			<ul class="nav navbar-nav">
 		        {% block menu %}
-				{% endblock %}
+		        {% endblock %}
 	        </ul>
+	        <div class="navbar-right">
+	        	<ul class="nav navbar-nav">
+					<li><a href="{% url 'accounts:logout' %}">Déconnexion</a></li>
+				</ul>
+	        </div>
 		</div>
 	</nav>
 	<ul class="nav nav-pills nav-stacked" style="width: 20%;margin:2%;float:left">
 		<li class="active"><a href="/">Accueil</a></li>
 		<li><a href="{% url 'accounts:index' %}">Profil</a></li>
-		{% if user.utilisateur.is_etudiant %}
-			<li><a href="">Absences</a></li>
-			<li><a href=""><span class="badge pull-right">2</span>Absences non justifiées</a></li>
-		{% elif user.utilisateur.is_enseignant %}
-			<li><a href="{% url 'saisie:saisie' %}">Ajouter des absences</a></li>
-			<li><a href="">Consulter les absences</a></li>
-		{% elif user.utilisateur.is_secretaire %}
-			<li><a href="">Ajouter un justificatif</a></li>
-			<li><a href="">Consulter absences</a></li>
-			<li><a href="{% url 'accounts:register' %}">Ajouter utilisateur</a></li>
-		{% endif %}
+		{% for group in user.groups.all %}
+			{% if group.id == 1 %}
+				<li><a href="">Absences</a></li>
+				<li><a href=""><span class="badge pull-right">2</span>Absences non justifiées</a></li>
+			{% elif group.id == 2 %}
+				<li><a href="">Ajouter un justificatif</a></li>
+				<li><a href="">Consulter absences</a></li>
+				<li><a href="{% url 'accounts:register' %}">Ajouter utilisateur</a></li>
+			{% elif group.id == 3 %}
+				<li><a href="{% url 'saisie:saisie' %}">Ajouter des absences</a></li>
+				<li><a href="">Consulter les absences</a></li>
+			{% endif %}
 
-		{% if is_directeur %}
-			<li><a href="">Consulter absences département</a></li>
-		{% endif %}
-		{% if is_responsable %}
-			<li><a href="">Consulter absences année</a></li>
-		{% endif %}
+			{% if group.id == 4 %}
+				<li><a href="">Consulter absences département</a></li>
+			{% endif %}
+			{% if group.id == 5 %}
+				<li><a href="">Consulter absences année</a></li>
+			{% endif %}
+		{% endfor %}
 	</ul>
 	<section style="width: 72%; margin-left:25%;">
 		{% block content %}
