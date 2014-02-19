@@ -8,6 +8,9 @@ class Utilisateur(models.Model):
 	class Meta:
 		abstract = True
 
+	def __str__(self):
+		return self.user.first_name + " " + self.user.last_name
+
 class Enseignant(Utilisateur):
 	pass
 

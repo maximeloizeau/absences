@@ -21,6 +21,13 @@ def register(request):
 						'form': form,
 						'error': 'Nom d\'utilisateur déjà utilisé.',
 					})
+
+				if request.POST['password'] != request.POST['password_confirm']:
+					return render(request, template, {
+						'form': form,
+						'error': 'Les mots de passe ne sont pas identiques',
+					})
+
 				# TODO : try/catch création utilisateur
 				user = User.objects.create_user(request.POST['login'], request.POST['email'], request.POST['password'], first_name=request.POST['first_name'], last_name=request.POST['last_name'])
 				if request.POST['role'] == "1":
