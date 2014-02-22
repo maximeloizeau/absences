@@ -7,4 +7,6 @@ urlpatterns = patterns('',
 	url(r'^saisie/$', views.saisie, name='saisie'),
 	url(r'^list/tojustify/$', AbsencesView.as_view(toJustify=True), name='list_tojustify'),
 	url(r'^list/$', AbsencesView.as_view(), name='list'),
+	url(r'^justificatif/$', views.justificatif, name='justificatif'),
+
 )

@@ -51,6 +51,10 @@ class Secretaire(Utilisateur):
 class Justificatif(models.Model):
 	motif = models.CharField(max_length=200)
 	fichier = models.CharField(max_length=200)
+	etudiant = models.ForeignKey(Etudiant)
+
+	def __str__(self):
+		return self.etudiant.user.first_name + " " + self.etudiant.user.last_name + " - " + self.motif
 
 class Absence(models.Model):
 	date = models.DateTimeField()
@@ -67,5 +71,5 @@ admin.site.register(Secretaire)
 admin.site.register(Departement)
 admin.site.register(Annee)
 admin.site.register(Matiere)
-admin.site.register(Absence)
 admin.site.register(Justificatif)
+admin.site.register(Absence)

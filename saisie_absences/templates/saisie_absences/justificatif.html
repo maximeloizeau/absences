@@ -1,0 +1,11 @@
+{% extends "saisie_absences/index.html" %}
+
+{% block content %}
+	{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+	{% if info %}<div class="alert alert-success">{{ info }}</div>{% endif %}
+	<form action="{% url 'saisie:justificatif' %}" method="POST">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" />
+	</form>
+{% endblock %}
