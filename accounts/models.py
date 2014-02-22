@@ -11,6 +11,7 @@ class Utilisateur(models.Model):
 	def __str__(self):
 		return self.user.first_name + " " + self.user.last_name
 
+
 class Enseignant(Utilisateur):
 	pass
 
@@ -39,6 +40,10 @@ class Matiere(models.Model):
 
 class Etudiant(Utilisateur):
 	annee = models.ForeignKey(Annee, on_delete=models.SET_NULL, null = True)
+
+	@property
+	def toJustify(self):
+		return Absence.objects.filter(etudiant=self).count()
 
 class Secretaire(Utilisateur):
 	pass

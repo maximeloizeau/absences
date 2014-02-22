@@ -1,11 +1,17 @@
 {% extends "saisie_absences/index.html" %}
+{% load addcss %}
 
 {% block content %}
 	{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-	<form action="{% url 'accounts:login' %}" method="POST" class="form-signin" role="form">
+	<form action="{% url 'accounts:login' %}" method="POST" role="form" class="horizontal-form">
 		<h2 class="form-signin-heading">Connexion</h2>
 		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" class="btn btn-primary"/>
+		{% for field in form %}
+			<div class="form-group">
+		        {{ field.errors }}
+		        {{field.label_tag}} {{field|addcss:"form-control"}}
+		    </div>
+	    {% endfor %}
+		<input type="submit" class="btn btn-primary" />
 	</form>
 {% endblock %}

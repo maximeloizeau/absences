@@ -24,4 +24,6 @@ $(document).ready(function() {
 		}
 	});
 	$("#id_role").change();
+
+	$("input[name='date']").datetimepicker();
 });

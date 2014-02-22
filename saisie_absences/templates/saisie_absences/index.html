@@ -1,10 +1,14 @@
+{% load active %}
 <html>
 <head>
 	<title>PolyAbs</title>
 	{% load staticfiles %}
 
-	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/index.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+
 </head>
 <body>
 	<nav role="navigation" class="navbar navbar-default">
@@ -25,26 +29,26 @@
 		</div>
 	</nav>
 	<ul class="nav nav-pills nav-stacked" style="width: 20%;margin:2%;float:left">
-		<li class="active"><a href="/">Accueil</a></li>
-		<li><a href="{% url 'accounts:index' %}">Profil</a></li>
+		<li class="{% active 'saisie:index' %}"><a href="{% url 'saisie:index' %}">Accueil</a></li>
+		<li class="{% active 'accounts:index' %}"><a href="{% url 'accounts:index' %}">Profil</a></li>
 		{% for group in user.groups.all %}
 			{% if group.id == 1 %}
-				<li><a href="">Absences</a></li>
-				<li><a href=""><span class="badge pull-right">2</span>Absences non justifiées</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="{% url 'saisie:list' %}">Absences</a></li>
+				<li class="{% active 'saisie:list_tojustify' %}"><a href="{% url 'saisie:list_tojustify' %}"><span class="badge pull-right">{{ user.etudiant.toJustify }}</span>Absences non justifiées</a></li>
 			{% elif group.id == 2 %}
-				<li><a href="">Ajouter un justificatif</a></li>
-				<li><a href="">Consulter absences</a></li>
-				<li><a href="{% url 'accounts:register' %}">Ajouter utilisateur</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="">Ajouter un justificatif</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="{% url 'saisie:list' %}">Consulter absences</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="{% url 'accounts:register' %}">Ajouter utilisateur</a></li>
 			{% elif group.id == 3 %}
-				<li><a href="{% url 'saisie:saisie' %}">Ajouter des absences</a></li>
-				<li><a href="">Consulter les absences</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="{% url 'saisie:saisie' %}">Ajouter des absences</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="{% url 'saisie:list' %}">Consulter les absences</a></li>
 			{% endif %}
 
 			{% if group.id == 4 %}
-				<li><a href="">Consulter absences département</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="">Consulter absences département</a></li>
 			{% endif %}
 			{% if group.id == 5 %}
-				<li><a href="">Consulter absences année</a></li>
+				<li class="{% active 'saisie:list' %}"><a href="">Consulter absences année</a></li>
 			{% endif %}
 		{% endfor %}
 	</ul>
@@ -55,6 +59,7 @@
 	</section>
 	<script src="{% static 'js/jquery-2.1.0.min.js' %}" type="text/javascript" charset="utf-8" async defer></script>
 	<script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript" charset="utf-8" async defer></script>
+	<script src="{% static 'js/bootstrap-datetimepicker.min.js' %}" type="text/javascript" charset="utf-8" async defer></script>
 	<script src="{% static 'js/init.js' %}" type="text/javascript" charset="utf-8" async defer></script>
 </body>
 </html>

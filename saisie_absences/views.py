@@ -4,6 +4,9 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.decorators import login_required
 from saisie_absences.forms import SaisieAbsencesForm
+from django.views.generic.list import ListView
+from accounts.models import Absence, Etudiant, Enseignant, Matiere
+
 
 @login_required
 def index(request):
@@ -39,3 +42,23 @@ def saisie(request):
 
 	else:
 		return HttpResponseRedirect(reverse('saisie:index'))
+
+class AbsencesView(ListView):
+	model = Absence
+	template_name = 'saisie_absences/list.html'
+	context_object_name = 'absences'
+	paginate_by = 20
+	toJustify = False
+
+	def get_queryset(self):
+		user = Etudiant.objects.get(user=self.request.user)
+		absences = Absence.objects.filter(etudiant=user).order_by('date')
+		if self.toJustify:
+			absences = absences.filter(justificatif=None)
+		return absences
+
+	def get(self, request):
+		print(request.user.etudiant.toJustify)
+		return render(self.request, 'saisie_absences/list.html', {
+			'absences': self.get_queryset(),
+			})

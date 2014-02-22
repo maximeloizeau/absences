@@ -1,0 +1,29 @@
+{% extends "saisie_absences/index.html" %}
+
+{% block content %}
+<h1>Absences</h1>
+<table class="table">
+	<tr>
+		<th>Matière</th>
+		<th>Date</th>
+		<th>Justifiée</th>
+	</tr>
+{% for abs in absences %}
+	<tr>
+    	<td>{{ abs.matiere.nom }}</td>
+    	<td>{{ abs.date.day }}/{{ abs.date.month }}/{{ abs.date.year }} {{ abs.date.hour }}:{{ abs.date.minute }}</td>
+    	<td class="glyphicon 
+    		{% if abs.justificatif %}
+			glyphicon-ok
+			{% else %}
+			glyphicon-remove
+			{% endif %}"></td>
+    </tr>
+{% empty %}
+    <tr>
+    	<td colspan=2>Aucune absence.</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
+
