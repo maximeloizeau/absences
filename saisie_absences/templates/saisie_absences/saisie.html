@@ -8,13 +8,13 @@
 		<h2 class="form-signin-heading">Ajouter une absence</h2>
 		{% csrf_token %}
 		<div class="form-group">
-		     {{form.matiere.label_tag}} <input type="text" name="date" data-format="MM/dd/yyyy hh:mm:ss" class="form-control" />
+		     {{form.date.label_tag}} <input type="text" name="date" data-format="MM/dd/yyyy hh:mm:ss" class="form-control" />
 	    </div>
 	    <div class="form-group">
 	        	{{form.matiere.label_tag}} {{form.matiere|addcss:"form-control"}}
 	    </div>
 	    <div class="form-group">
-	        	{{form.etudiant.label_tag}} {{form.etudiant|addcss:"form-control"}}
+	        	{{form.etudiants.label_tag}} {{form.etudiants|addcss:"form-control multiple-control"}}
 	    </div>
 		<input type="submit" class="btn btn-primary" />
 	</form>

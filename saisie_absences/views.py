@@ -1,16 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-
-from accounts.models import Justificatif, Absence, Etudiant
 from django.contrib.auth.decorators import login_required
-from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm, StudentForm
 from django.views.generic.list import ListView
-from accounts.models import Absence, Etudiant, Enseignant, Matiere
-
+from django.db.models import Count
+from datetime import date, timedelta
+from accounts.models import Absence, Etudiant, Enseignant, Matiere, Annee, Departement, Justificatif
+from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm, StudentForm
 
 @login_required
 def index(request):
+	if request.user.groups.filter(pk=4):
+		alert = Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12)).annotate(nb_absences=Count('etudiant'))
+	if request.user.groups.filter(pk=5):
+		pass
 	return render(request, 'saisie_absences/index.html', {
 		'user': request.user
 	})
@@ -23,12 +26,13 @@ def saisie(request):
 		if request.method == 'POST':
 			form = SaisieAbsencesForm(request.POST)
 			if form.is_valid():
-				form.save()
-				form = SaisieAbsencesForm()
-				return render(request, template, {
-					'form': form,
-					'info' : 'Absence enregistrée.'
-				})
+				etudiants = request.POST.getlist('etudiants')
+
+				for etu in etudiants:
+					absence = Absence(date=request.POST['date'], matiere=Matiere.objects.get(pk=request.POST['matiere']), etudiant=Etudiant.objects.get(pk=etu))
+					absence.save()
+
+				return HttpResponseRedirect(reverse('saisie:list'))
 			else:
 				return render(request, template, {
 					'form': form,
@@ -36,6 +40,7 @@ def saisie(request):
 				})
 		else:
 			form = SaisieAbsencesForm()
+			form.fields['matiere'].queryset = Matiere.objects.filter(chargeDeMatiere__id=request.user.enseignant.id)
 			return render(request, template,{
 				'form': form
 			})
@@ -92,16 +97,32 @@ class AbsencesView(ListView):
 	context_object_name = 'absences'
 	paginate_by = 20
 	toJustify = False
+	year = False
+	department = False
 
-	def get_queryset(self):
-		user = Etudiant.objects.get(user=self.request.user)
-		absences = Absence.objects.filter(etudiant=user).order_by('date')
+	def get_queryset(self, arg):
+		if self.request.user.groups.filter(pk=1).exists():
+			user = Etudiant.objects.get(user=self.request.user)
+			absences = Absence.objects.filter(etudiant=user).order_by('date')
+		elif self.request.user.groups.filter(pk=2).exists():
+			absences = Absence.objects.all().order_by('date')
+		elif self.request.user.groups.filter(pk=3).exists():
+			if self.request.user.groups.filter(pk=5).exists() and self.department:
+				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(dpt__in=Departement.objects.filter(directeur_id=self.request.user.enseignant.id))))
+			elif self.request.user.groups.filter(pk=4).exists() and self.year:
+				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(annee=Annee.objects.filter(responsable_id=self.request.user.enseignant.id)))
+			else:
+				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(chargeDeMatiere__id=self.request.user.enseignant.id)).order_by('-date')
+			
+			self.template_name = 'saisie_absences/list_enseignant.html'
+
 		if self.toJustify:
 			absences = absences.filter(justificatif=None)
+
 		return absences
 
-	def get(self, request):
-		print(request.user.etudiant.toJustify)
-		return render(self.request, 'saisie_absences/list.html', {
-			'absences': self.get_queryset(),
+	def get(self, request, arg=None):
+		absences = self.get_queryset(arg)
+		return render(self.request, self.template_name, {
+			'absences': absences,
 			})

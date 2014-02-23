@@ -1,11 +1,11 @@
-from accounts.models import Absence, Justificatif, Etudiant
+from accounts.models import Absence, Justificatif, Etudiant, Matiere
 from django.forms import ModelForm, Form
 from django import forms
 
-class SaisieAbsencesForm(ModelForm):
-	class Meta:
-		model = Absence
-		fields = ('date', 'matiere', 'etudiant')
+class SaisieAbsencesForm(forms.Form):
+	date = forms.DateTimeField(required=True)
+	matiere = forms.ModelChoiceField(queryset=Matiere.objects.all(), required=True)
+	etudiants = forms.ModelMultipleChoiceField(queryset=Etudiant.objects.all(), required=True)
 
 class SaisieJustificatifForm(ModelForm):
 	class Meta:
@@ -18,4 +18,3 @@ class StudentForm(forms.Form):
 	fichier = forms.CharField(max_length=200)
 	eleve = forms.ModelChoiceField(queryset = Etudiant.objects.all(), required = True)
 	liste_absences = forms.ModelMultipleChoiceField(queryset = Absence.objects.all(), widget=forms.CheckboxSelectMultiple, required = True)
-

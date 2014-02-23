@@ -1,11 +1,17 @@
 {% extends "saisie_absences/index.html" %}
+{% load addcss %}
 
 {% block content %}
 	{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
 	{% if info %}<div class="alert alert-success">{{ info }}</div>{% endif %}
-	<form action="{% url 'saisie:justificatif' %}" method="POST">
+	<form action="{% url 'saisie:justificatif' %}" method="POST" class="horizontal-form">
 		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" />
+		{% for field in form %}
+			<div class="form-group">
+		        {{ field.errors }}
+		        {{field.label_tag}} {{field|addcss:"form-control"}}
+		    </div>
+	    {% endfor %}
+		<input type="submit" class="btn btn-primary" />
 	</form>
 {% endblock %}
