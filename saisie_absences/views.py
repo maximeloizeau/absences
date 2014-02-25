@@ -11,11 +11,36 @@ from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 
 @login_required
 def index(request):
+<<<<<<< HEAD
 	if request.user.groups.filter(pk=3):
 		alert = Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12)).annotate(nb_absences=Count('etudiant'))
 		print(alert)
+=======
+	if request.user.groups.filter(pk=4):
+		etu = Etudiant.objects.all()
+		absences = []
+		for i in etu:
+			nb_absence = { "nom" : i.user.last_name + " " + i.user.first_name, "nb" : Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12), etudiant = i, justificatif = None ,matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(responsable_id=request.user.enseignant.id))).count()}
+			if nb_absence["nb"] > 5:
+				absences.append(nb_absence)
+		return render(request, 'saisie_absences/indexResponsable.html', {
+		'user': request.user,
+		'absences' : absences
+		})
+
+>>>>>>> bfc6f971f094eb30e9e7807c9bf111620f198e88
 	if request.user.groups.filter(pk=5):
-		pass
+		etu = Etudiant.objects.all()
+		absences = []
+		for i in etu:
+			nb_absence = { "nom" : i.user.last_name + " " + i.user.first_name, "nb" : Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12), etudiant = i, justificatif = None, matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(dpt__in=Departement.objects.filter(directeur_id=request.user.enseignant.id)))).count()}
+			if nb_absence["nb"] > 5:
+				absences.append(nb_absence)
+		return render(request, 'saisie_absences/indexDirecteur.html', {
+		'user': request.user,
+		'absences' : absences
+		})
+	
 	return render(request, 'saisie_absences/index.html', {
 		'user': request.user
 	})
@@ -64,8 +89,11 @@ def justificatif(request):
 			form = SaisieJustificatifForm(request.POST, request.FILES)
 			if form.is_valid():
 				absences = request.POST.getlist('liste_absences')
-
-				justif = Justificatif(motif = request.POST['motif'], fichier = request.FILES['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
+				if request.FILES.get('fichier') != None:
+					fichier = request.FILES.get('fichier')
+				else: 
+					fichier = None
+				justif = Justificatif(motif = request.POST['motif'], fichier = fichier, etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
 				justif.save()
 
 				for i in absences:

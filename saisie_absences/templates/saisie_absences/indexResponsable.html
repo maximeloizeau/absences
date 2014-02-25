@@ -1,0 +1,17 @@
+{% extends "saisie_absences/index.html" %}
+
+{% block content %}
+	<div class="alert alert-success">Bienvenue {{ user.first_name }} {{ user.last_name }}</div>
+
+	{% if absences %}
+		<div class="alert alert-warning">Attention: Ces étudiants ont plus de 5 absences non justifiées ces 3 derniers mois:
+		<ul>
+		{% for abs in absences %}
+			<li>{{abs.nom}} ({{abs.nb}})</li>
+		{% endfor %}
+		</ul>
+		</div>
+
+	{% endif %}
+
+{% endblock %}

@@ -61,7 +61,14 @@
 	</ul>
 	<section style="width: 72%; margin-left:25%;">
 		{% block content %}
-		<div class="alert alert-success">Bienvenue {{ user.first_name }} {{ user.last_name }}</div>
+			<div class="alert alert-success">Bienvenue {{ user.first_name }} {{ user.last_name }}</div>
+			{% for group in user.groups.all %}
+				{% if group.id == 1 %}
+					{% if user.etudiant.toJustify > 5 %}
+					<div class="alert alert-warning">Attention: Vous avez plus de 5 absences non justifiées ces 3 derniers mois. </div>
+					{% endif %}
+				{% endif %}
+			{% endfor %}		
 		{% endblock %}
 	</section>
 	<script src="{% static 'js/jquery-2.1.0.min.js' %}" type="text/javascript" charset="utf-8" async defer></script>
