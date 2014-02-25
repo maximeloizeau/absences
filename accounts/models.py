@@ -50,7 +50,7 @@ class Secretaire(Utilisateur):
 
 class Justificatif(models.Model):
 	motif = models.CharField(max_length=200)
-	fichier = models.CharField(max_length=200)
+	fichier = models.FileField(upload_to='documents/%Y/%m/%d')
 	etudiant = models.ForeignKey(Etudiant)
 
 	def __str__(self):

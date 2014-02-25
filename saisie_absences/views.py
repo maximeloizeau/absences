@@ -56,12 +56,11 @@ def justificatif(request):
 		template = 'saisie_absences/justificatif.html'
 
 		if request.method == 'POST':
-			print(request.POST)
 			form = SaisieJustificatifForm(request.POST)
 			if form.is_valid():
 				absences = request.POST.getlist('liste_absences')
 
-				justif = Justificatif(motif = request.POST['motif'], fichier = request.POST['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
+				justif = Justificatif(motif = request.POST['motif'], fichier = request.FILES['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
 				justif.save()
 
 				for i in absences:
