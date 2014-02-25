@@ -10,6 +10,6 @@ class SaisieAbsencesForm(forms.Form):
 
 class SaisieJustificatifForm(forms.Form):
 	motif = forms.CharField(max_length=200)
-	fichier = forms.FileField(label= 'Selectionner le justificatif')
-	eleve = forms.ModelChoiceField(queryset = Etudiant.objects.all(), required = True)
+	fichier = forms.FileField(label= 'Selectionner le justificatif', required = False)
+	etudiant = forms.ModelChoiceField(queryset = Etudiant.objects.all(), required = True)
 	liste_absences = forms.ModelMultipleChoiceField(queryset=Absence.objects.all(), required=True)

@@ -12,9 +12,29 @@ from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 @login_required
 def index(request):
 	if request.user.groups.filter(pk=4):
-		alert = Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12)).annotate(nb_absences=Count('etudiant'))
+		etu = Etudiant.objects.all()
+		absences = []
+		for i in etu:
+			nb_absence = { "nom" : i.user.last_name + " " + i.user.first_name, "nb" : Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12), etudiant = i, justificatif = None ,matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(responsable_id=request.user.enseignant.id))).count()}
+			if nb_absence["nb"] > 5:
+				absences.append(nb_absence)
+		return render(request, 'saisie_absences/indexResponsable.html', {
+		'user': request.user,
+		'absences' : absences
+		})
+
 	if request.user.groups.filter(pk=5):
-		pass
+		etu = Etudiant.objects.all()
+		absences = []
+		for i in etu:
+			nb_absence = { "nom" : i.user.last_name + " " + i.user.first_name, "nb" : Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12), etudiant = i, justificatif = None, matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(dpt__in=Departement.objects.filter(directeur_id=request.user.enseignant.id)))).count()}
+			if nb_absence["nb"] > 5:
+				absences.append(nb_absence)
+		return render(request, 'saisie_absences/indexDirecteur.html', {
+		'user': request.user,
+		'absences' : absences
+		})
+	
 	return render(request, 'saisie_absences/index.html', {
 		'user': request.user
 	})
@@ -56,11 +76,14 @@ def justificatif(request):
 		template = 'saisie_absences/justificatif.html'
 
 		if request.method == 'POST':
-			form = SaisieJustificatifForm(request.POST)
+			form = SaisieJustificatifForm(request.POST, request.FILES)
 			if form.is_valid():
 				absences = request.POST.getlist('liste_absences')
-
-				justif = Justificatif(motif = request.POST['motif'], fichier = request.FILES['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
+				if request.FILES.get('fichier') != None:
+					fichier = request.FILES.get('fichier')
+				else: 
+					fichier = None
+				justif = Justificatif(motif = request.POST['motif'], fichier = fichier, etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
 				justif.save()
 
 				for i in absences:
@@ -102,7 +125,7 @@ class AbsencesView(ListView):
 	def get_queryset(self, arg):
 		if self.request.user.groups.filter(pk=1).exists():
 			user = Etudiant.objects.get(user=self.request.user)
-			absences = Absence.objects.filter(etudiant=user).order_by('date').order_by('-date')
+			absences = Absence.objects.filter(etudiant=user).order_by('-date')
 		elif self.request.user.groups.filter(pk=2).exists():
 			absences = Absence.objects.all().order_by('date').order_by('-date')
 		elif self.request.user.groups.filter(pk=3).exists():
