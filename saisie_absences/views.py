@@ -76,7 +76,6 @@ def justificatif(request):
 					'info': 'Justificatif enregistré.'
 				})
 			else:
-				print(form.errors)
 				return render(request, template, {
 					'form': form,
 					'error': 'Veuillez remplir tous les champs correctement.',
