@@ -6,7 +6,7 @@ from django.views.generic.list import ListView
 from django.db.models import Count
 from datetime import date, timedelta
 from accounts.models import Absence, Etudiant, Enseignant, Matiere, Annee, Departement, Justificatif
-from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm, StudentForm
+from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 
 @login_required
 def index(request):
@@ -56,12 +56,12 @@ def justificatif(request):
 
 		if request.method == 'POST':
 
-			form = StudentForm(request.POST)
+			form = SaisieJustificatifForm(request.POST, request.FILES)
 			if form.is_valid():
 
 				absences = request.POST.getlist('liste_absences')
 
-				justif = Justificatif(motif = request.POST['motif'], fichier = request.POST['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['eleve']))
+				justif = Justificatif(motif = request.POST['motif'], fichier = request.FILES['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['eleve']))
 				justif.save()
 
 				for i in absences:
@@ -71,7 +71,7 @@ def justificatif(request):
 						absence.save()
 
 
-				form = StudentForm()
+				form = SaisieJustificatifForm()
 				return render(request, template, {
 					'form': form,
 					'info': 'Justificatif enregistré.'
@@ -83,7 +83,7 @@ def justificatif(request):
 				})
 		else:
 
-			form = StudentForm()
+			form = SaisieJustificatifForm()
 			return render(request, template,{
 				'form': form
 			})
