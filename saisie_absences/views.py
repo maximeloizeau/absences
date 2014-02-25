@@ -1,12 +1,13 @@
+import json
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.list import ListView
 from django.db.models import Count
 from datetime import date, timedelta
 from accounts.models import Absence, Etudiant, Enseignant, Matiere, Annee, Departement, Justificatif
-from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm, StudentForm
+from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 
 @login_required
 def index(request):
@@ -55,35 +56,35 @@ def justificatif(request):
 		template = 'saisie_absences/justificatif.html'
 
 		if request.method == 'POST':
-
-			form = StudentForm(request.POST)
+			print(request.POST)
+			form = SaisieJustificatifForm(request.POST)
 			if form.is_valid():
-
 				absences = request.POST.getlist('liste_absences')
 
-				justif = Justificatif(motif = request.POST['motif'], fichier = request.POST['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['eleve']))
+				justif = Justificatif(motif = request.POST['motif'], fichier = request.POST['fichier'], etudiant =  Etudiant.objects.get(pk=request.POST['etudiant']))
 				justif.save()
 
 				for i in absences:
-					if ( request.POST['eleve'] == Absence.objects.get(pk = i).etudiant.pk.__str__()):
+					if ( request.POST['etudiant'] == Absence.objects.get(pk = i).etudiant.pk.__str__()):
 						absence = Absence.objects.get(pk = i)
 						absence.justificatif = justif
 						absence.save()
 
 
-				form = StudentForm()
+				form = SaisieJustificatifForm()
 				return render(request, template, {
 					'form': form,
 					'info': 'Justificatif enregistré.'
 				})
 			else:
+				print(form.errors)
 				return render(request, template, {
 					'form': form,
 					'error': 'Veuillez remplir tous les champs correctement.',
 				})
 		else:
 
-			form = StudentForm()
+			form = SaisieJustificatifForm()
 			return render(request, template,{
 				'form': form
 			})
@@ -112,7 +113,8 @@ class AbsencesView(ListView):
 			elif self.request.user.groups.filter(pk=4).exists() and self.year:
 				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(annee=Annee.objects.filter(responsable_id=self.request.user.enseignant.id)))
 			else:
-				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(chargeDeMatiere__id=self.request.user.enseignant.id)).order_by('-date')
+				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(chargeDeMatiere__id=self.request.user.enseignant.id)).annotate(nb_etudiants=Count('date'))
+				#.order_by('-date')
 			
 			self.template_name = 'saisie_absences/list_enseignant.html'
 
@@ -126,3 +128,20 @@ class AbsencesView(ListView):
 		return render(self.request, self.template_name, {
 			'absences': absences,
 			})
+
+def api_absences_list(request, id_etu=None):
+	if id_etu:
+		absences = Absence.objects.filter(etudiant_id=id_etu)
+	else:
+		absences = Absence.objects.all()
+
+	output = []
+	for abs in absences:
+		abs_out = {
+			'id': abs.id,
+			'date': abs.date.strftime('%d/%m/%Y %H:%M'),
+			'matiere': abs.matiere.nom
+		}
+		output.append(abs_out)
+
+	return HttpResponse(json.dumps(output), content_type='application/json')

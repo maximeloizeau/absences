@@ -29,4 +29,18 @@ $(document).ready(function() {
 
 	$(".multiple-control").chosen();
 	$("ul.chosen-choices").addClass("form-control");
+
+	$("div#etudiant_select select").change(function() {
+		$.get("/api/absences/list/" + $(this).val(), function(data) {
+			var select = $("div#absences_etudiant select");
+			select.empty();
+			console.log(data);
+			for(var i = 0; i < data.length; i++) {
+				select.append('<option value="' + data[i].id + '">' + data[i].matiere + ' ' + data[i].date + '</option>');
+			}
+
+			$(".multiple-control").trigger('chosen:updated');
+		});
+	});
+	$("div#etudiant_select select").change();
 });

@@ -43,7 +43,7 @@ class Etudiant(Utilisateur):
 
 	@property
 	def toJustify(self):
-		return Absence.objects.filter(etudiant=self).count()
+		return Absence.objects.filter(etudiant=self, justificatif=None).count()
 
 class Secretaire(Utilisateur):
 	pass

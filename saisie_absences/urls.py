@@ -12,5 +12,5 @@ urlpatterns = patterns('',
 	url(r'^list/year/([A-Za-z0-9]+)$', AbsencesView.as_view(year=True), name='list_year'),
 	url(r'^list/$', AbsencesView.as_view(), name='list'),
 	url(r'^justificatif/$', views.justificatif, name='justificatif'),
-
+	url(r'^api/absences/list/([0-9]*)$', views.api_absences_list, name='api_absences_list'),
 )

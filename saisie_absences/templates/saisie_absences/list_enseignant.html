@@ -6,13 +6,13 @@
 	<tr>
 		<th>Matière</th>
 		<th>Date</th>
-		<th>Etudiants</th>
+		<th>Absences</th>
 	</tr>
 	{% for abs in absences %}
 		<tr>
 	    	<td>{{ abs.matiere.nom }}</td>
 	    	<td>{{ abs.date.day }}/{{ abs.date.month }}/{{ abs.date.year }} {{ abs.date.hour }}:{{ abs.date.minute }}</td>
-	    	<td>{{ abs.etudiant }}</td>
+	    	<td>{{ abs.nb_etudiants }}</td>
 	    </tr>
 	{% empty %}
 	    <tr>
