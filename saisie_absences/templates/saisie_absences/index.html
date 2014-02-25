@@ -24,6 +24,7 @@
 	        </ul>
 	        <div class="navbar-right">
 	        	<ul class="nav navbar-nav">
+	        		<li><a href="{% url 'accounts:index' %}" ><strong>{{ user.username }}</strong></a></li>
 					<li><a href="{% url 'accounts:logout' %}">Déconnexion</a></li>
 				</ul>
 	        </div>

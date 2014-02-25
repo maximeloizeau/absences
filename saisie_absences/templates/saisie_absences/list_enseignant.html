@@ -7,12 +7,19 @@
 		<th>Matière</th>
 		<th>Date</th>
 		<th>Absent</th>
+		<th>Justifié</th>
 	</tr>
 	{% for abs in absences %}
 		<tr>
 	    	<td>{{ abs.matiere.nom }}</td>
 	    	<td>{{ abs.date|date:"d/m/Y H:i" }}</td>
 	    	<td>{{ abs.etudiant }}</td>
+	    	<td class="glyphicon 
+    		{% if abs.justificatif %}
+			glyphicon-ok
+			{% else %}
+			glyphicon-remove
+			{% endif %}"></td>
 	    </tr>
 	{% empty %}
 	    <tr>

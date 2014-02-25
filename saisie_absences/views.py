@@ -11,8 +11,9 @@ from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 
 @login_required
 def index(request):
-	if request.user.groups.filter(pk=4):
+	if request.user.groups.filter(pk=3):
 		alert = Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12)).annotate(nb_absences=Count('etudiant'))
+		print(alert)
 	if request.user.groups.filter(pk=5):
 		pass
 	return render(request, 'saisie_absences/index.html', {
@@ -33,7 +34,11 @@ def saisie(request):
 					absence = Absence(date=request.POST['date'], matiere=Matiere.objects.get(pk=request.POST['matiere']), etudiant=Etudiant.objects.get(pk=etu))
 					absence.save()
 
-				return HttpResponseRedirect(reverse('saisie:list'))
+				form = SaisieAbsencesForm()
+				return render(request, template, {
+					'form': form,
+					'info': 'Absence enregistrée.',
+				})
 			else:
 				return render(request, template, {
 					'form': form,
@@ -56,7 +61,7 @@ def justificatif(request):
 		template = 'saisie_absences/justificatif.html'
 
 		if request.method == 'POST':
-			form = SaisieJustificatifForm(request.POST)
+			form = SaisieJustificatifForm(request.POST, request.FILES)
 			if form.is_valid():
 				absences = request.POST.getlist('liste_absences')
 
@@ -76,6 +81,7 @@ def justificatif(request):
 					'info': 'Justificatif enregistré.'
 				})
 			else:
+				print(form.errors)
 				return render(request, template, {
 					'form': form,
 					'error': 'Veuillez remplir tous les champs correctement.',
@@ -102,7 +108,7 @@ class AbsencesView(ListView):
 	def get_queryset(self, arg):
 		if self.request.user.groups.filter(pk=1).exists():
 			user = Etudiant.objects.get(user=self.request.user)
-			absences = Absence.objects.filter(etudiant=user).order_by('date').order_by('-date')
+			absences = Absence.objects.filter(etudiant=user).order_by('-date')
 		elif self.request.user.groups.filter(pk=2).exists():
 			absences = Absence.objects.all().order_by('date').order_by('-date')
 		elif self.request.user.groups.filter(pk=3).exists():
