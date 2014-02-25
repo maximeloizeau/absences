@@ -11,11 +11,6 @@ from saisie_absences.forms import SaisieAbsencesForm, SaisieJustificatifForm
 
 @login_required
 def index(request):
-<<<<<<< HEAD
-	if request.user.groups.filter(pk=3):
-		alert = Absence.objects.filter(date__gt=date.today()-timedelta(days=3*365/12)).annotate(nb_absences=Count('etudiant'))
-		print(alert)
-=======
 	if request.user.groups.filter(pk=4):
 		etu = Etudiant.objects.all()
 		absences = []
@@ -27,8 +22,7 @@ def index(request):
 		'user': request.user,
 		'absences' : absences
 		})
-
->>>>>>> bfc6f971f094eb30e9e7807c9bf111620f198e88
+		
 	if request.user.groups.filter(pk=5):
 		etu = Etudiant.objects.all()
 		absences = []
@@ -109,7 +103,6 @@ def justificatif(request):
 					'info': 'Justificatif enregistré.'
 				})
 			else:
-				print(form.errors)
 				return render(request, template, {
 					'form': form,
 					'error': 'Veuillez remplir tous les champs correctement.',

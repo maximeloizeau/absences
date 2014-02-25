@@ -8,11 +8,7 @@
 		<h2 class="form-signin-heading">Ajouter une absence</h2>
 		{% csrf_token %}
 		<div class="form-group">
-<<<<<<< HEAD
-		     {{form.date.label_tag}} <input type="text" name="date" class="form-control" autocomplete="off" readonly />
-=======
 		     {{form.date.label_tag}} <input type="text" name="date" class="form-control" />
->>>>>>> bfc6f971f094eb30e9e7807c9bf111620f198e88
 	    </div>
 	    <div class="form-group">
 	        	{{form.matiere.label_tag}} {{form.matiere|addcss:"form-control"}}
