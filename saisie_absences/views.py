@@ -132,6 +132,7 @@ class AbsencesView(ListView):
 			absences = Absence.objects.filter(etudiant=user).order_by('-date')
 		elif self.request.user.groups.filter(pk=2).exists():
 			absences = Absence.objects.all().order_by('date').order_by('-date')
+			self.template_name = 'saisie_absences/list_enseignant.html'
 		elif self.request.user.groups.filter(pk=3).exists():
 			if self.request.user.groups.filter(pk=5).exists() and self.department:
 				absences = Absence.objects.filter(matiere__in=Matiere.objects.filter(annee__in=Annee.objects.filter(dpt__in=Departement.objects.filter(directeur_id=self.request.user.enseignant.id)))).order_by('-date')
